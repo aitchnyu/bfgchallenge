@@ -4,7 +4,7 @@ from django.utils.timezone import now
 
 
 class User(AbstractUser):
-    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    balance = models.IntegerField(default=0)
 
     def loan_to(self, debtee, amount, reason):
         transaction = Transaction.objects.create(debtor=self, debtee=debtee, amount=amount, reason=reason)
@@ -16,7 +16,7 @@ class User(AbstractUser):
 
 
 class Transaction(models.Model):
-    amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    amount = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     repaid_at = models.DateTimeField(null=True)
     debtor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debtor_transactions')
@@ -27,7 +27,8 @@ class Transaction(models.Model):
         return {
             'id': self.id,
             'created_at': self.created_at,
-            'repaid_at': self.repaid_at,
+            'is_repaid': bool(self.repaid_at),
+            'amount': self.amount,
             'debtor': self.debtor.username,
             'debtee': self.debtee.username,
             'reason': self.reason

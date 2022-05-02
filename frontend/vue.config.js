@@ -7,6 +7,6 @@ module.exports = defineConfig({
         warnings: false,
         errors: false,
       },
-    }
-  }
+    },
+  },
 });

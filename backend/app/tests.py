@@ -38,12 +38,12 @@ class LoginTestCase(AppTestCase):
         client = Client()
         user = User.objects.create_user(username='foo', password='bar')
         response = client.post('/login', {'username': 'foo', 'password': 'bar'})
-        self.assertTrue(response.json()['data']['has_valid_credentials'])
+        self.assertResponseSuccess(response)
 
     def test_login_with_incorrect_credentials_fail(self):
         client = Client()
         response = client.post('/login', {'username': 'foo', 'password': 'bar'})
-        self.assertFalse(response.json()['data']['has_valid_credentials'])
+        self.assertResponseFail(response)
 
 
 class CreateTransactionTestCase(AppTestCase):

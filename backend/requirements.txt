@@ -1,2 +1,5 @@
 # Main web framework
 Django==4.0.3
+
+# Allow cross origin requests in dev mode
+django-cors-headers==3.11.0

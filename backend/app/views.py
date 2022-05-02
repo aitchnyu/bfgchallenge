@@ -2,22 +2,30 @@ import json
 
 from django.contrib.auth import authenticate
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from app.forms import TransactionForm
 from app.models import Transaction, User
 
-
+@csrf_exempt
 def login(request):
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(username=username, password=password)
     # TODO Will need to use real sessions for a production quality app
-    return JsonResponse({
-        'status': 'success',
-        'data': {'has_valid_credentials': bool(user)}
-    })
+    if not user:
+        return JsonResponse({
+            'status': 'fail',
+            'data': {}
+        })
+    else:
+        return JsonResponse({
+            'status': 'success',
+            'data': {}
+        })
 
 
+@csrf_exempt
 def add_transaction(request):
     form = TransactionForm(request.POST)
     if not form.is_valid():
@@ -50,6 +58,7 @@ def show_transactions(request):
     })
 
 
+@csrf_exempt
 def mark_paid(request):
     transaction = Transaction.objects.filter(id=request.POST['transaction_id'], repaid_at=None).first()
     if not transaction:
